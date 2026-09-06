@@ -4,97 +4,169 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Kan jeg bygge? – sjekk garasje, tilbygg og terrasse mot tomta di</title>
-<meta name="description" content="Skriv inn adressen, tegn garasjen eller tilbygget på tomta, og få svar på om du må søke, om du er for nær nabogrensa og hvor mye av tomta du bruker.">
+<meta name="description" content="Bruk posisjonen din eller skriv inn adressen. Vi henter tomtegrensene, planen, farekart og reglene, tegner bygget på tomta og sier om du må søke.">
+<meta property="og:title" content="Kan jeg bygge? – forhåndssjekk av byggesaken din">
+<meta property="og:description" content="Tomtegrenser fra Kartverket, plan fra kommunen, farekart fra NVE. Tegn garasjen og få svar på om du må søke.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <style>
-:root{--bg:#f6f7f4;--card:#fff;--ink:#17201a;--muted:#5f6b63;--line:#dfe4de;--brand:#1f6b3a;--brand2:#e8f3ec;--ok:#1f6b3a;--warn:#b7791f;--bad:#b3261e;--r:12px}
+:root{--bg:#f4f6f3;--card:#fff;--ink:#141a16;--muted:#5c675f;--line:#e2e7e1;--brand:#155d33;--brand-2:#1f7a44;--tint:#e6f2ea;--ok:#177a3e;--warn:#b26a0b;--bad:#b3261e;--r:14px;--sh:0 1px 2px rgba(20,26,22,.04),0 8px 24px rgba(20,26,22,.06)}
 *{box-sizing:border-box}
-body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.45}
-header{background:#fff;border-bottom:1px solid var(--line);padding:14px 18px;display:flex;align-items:center;gap:12px}
-header .logo{font-weight:800;font-size:20px;color:var(--brand);letter-spacing:-.3px}
-header .tag{color:var(--muted);font-size:13px}
-main{max-width:1100px;margin:0 auto;padding:16px}
-.hero{padding:18px 0 8px}
-.hero h1{font-size:clamp(24px,4vw,36px);margin:0 0 6px;letter-spacing:-.5px}
-.hero p{margin:0;color:var(--muted);font-size:16px;max-width:680px}
-.grid{display:grid;grid-template-columns:1fr;gap:16px;margin-top:14px}
-@media(min-width:900px){.grid{grid-template-columns:420px 1fr}}
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px}
-.card h2{font-size:15px;margin:0 0 10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
-.search{position:relative}
-.search input{width:100%;font-size:17px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;outline:none}
-.search input:focus{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand2)}
-.sugg{position:absolute;left:0;right:0;top:100%;background:#fff;border:1px solid var(--line);border-radius:10px;margin-top:4px;z-index:2000;max-height:260px;overflow:auto;box-shadow:0 8px 24px rgba(0,0,0,.08)}
-.sugg div{padding:10px 12px;cursor:pointer;border-bottom:1px solid var(--line)}
-.sugg div:hover{background:var(--brand2)}
-.sugg div small{display:block;color:var(--muted)}
-#map{height:420px;border-radius:var(--r);border:1px solid var(--line);z-index:1}
-@media(min-width:900px){#map{height:560px}}
-.row{display:flex;gap:10px;flex-wrap:wrap}
-.row>*{flex:1 1 120px}
-label{display:block;font-size:13px;color:var(--muted);margin:8px 0 4px}
-input[type=number],select{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;font-size:15px;background:#fff}
-input[type=range]{width:100%}
-.chk{display:flex;align-items:center;gap:8px;font-size:14px;margin-top:8px}
-.chk input{width:18px;height:18px}
-.btn{display:inline-block;background:var(--brand);color:#fff;border:0;border-radius:10px;padding:11px 16px;font-size:15px;font-weight:600;cursor:pointer;text-decoration:none}
-.btn.sec{background:#fff;color:var(--brand);border:1px solid var(--brand)}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:var(--brand)}
+nav{position:sticky;top:0;z-index:1500;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+nav .in{max-width:1180px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:18px}
+nav .logo{font-weight:800;font-size:19px;color:var(--brand);letter-spacing:-.4px;text-decoration:none;display:flex;align-items:center;gap:8px}
+nav .logo i{width:26px;height:26px;border-radius:7px;background:var(--brand);display:inline-block;position:relative}
+nav .logo i:after{content:"";position:absolute;left:7px;top:7px;width:12px;height:12px;border:2.5px solid #fff;border-radius:2px}
+nav .links{margin-left:auto;display:flex;gap:18px;font-size:14px}
+nav .links a{color:var(--muted);text-decoration:none;font-weight:500}
+nav .links a:hover{color:var(--ink)}
+@media(max-width:720px){nav .links{display:none}}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+.hero{padding:56px 0 28px;text-align:center}
+.hero .eyebrow{display:inline-block;background:var(--tint);color:var(--brand);font-weight:600;font-size:13px;padding:5px 12px;border-radius:99px;margin-bottom:14px}
+.hero h1{font-size:clamp(30px,5vw,52px);line-height:1.08;letter-spacing:-1.2px;margin:0 auto 12px;max-width:820px;font-weight:800}
+.hero p{margin:0 auto;max-width:640px;color:var(--muted);font-size:17px}
+.searchbar{max-width:720px;margin:26px auto 0;display:flex;gap:10px;flex-wrap:wrap}
+.searchbar .field{flex:1 1 320px;position:relative}
+.searchbar input{width:100%;font:inherit;font-size:17px;padding:15px 16px 15px 44px;border:1px solid var(--line);border-radius:12px;outline:none;background:#fff;box-shadow:var(--sh)}
+.searchbar input:focus{border-color:var(--brand);box-shadow:0 0 0 4px var(--tint)}
+.searchbar .field:before{content:"";position:absolute;left:16px;top:17px;width:14px;height:14px;border:2px solid #8b968e;border-radius:50%}
+.searchbar .field:after{content:"";position:absolute;left:29px;top:31px;width:7px;height:2px;background:#8b968e;transform:rotate(45deg)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--brand);color:#fff;border:0;border-radius:12px;padding:14px 20px;font:inherit;font-size:15px;font-weight:600;cursor:pointer;text-decoration:none;white-space:nowrap}
+.btn:hover{background:var(--brand-2)}
+.btn.sec{background:#fff;color:var(--brand);border:1px solid var(--line);box-shadow:var(--sh)}
+.btn.sec:hover{background:var(--tint)}
+.btn.sm{padding:9px 14px;font-size:14px;border-radius:9px}
 .btn:disabled{opacity:.5;cursor:default}
-.kv{display:grid;grid-template-columns:1fr auto;gap:6px 14px;font-size:14px}
-.kv b{font-weight:600}
+.sugg{position:absolute;left:0;right:0;top:100%;background:#fff;border:1px solid var(--line);border-radius:12px;margin-top:6px;z-index:2000;max-height:280px;overflow:auto;box-shadow:0 12px 32px rgba(0,0,0,.12);text-align:left}
+.sugg div{padding:11px 14px;cursor:pointer;border-bottom:1px solid var(--line);font-weight:500}
+.sugg div:hover{background:var(--tint)}
+.sugg div small{display:block;color:var(--muted);font-weight:400}
+.trust{margin-top:16px;color:var(--muted);font-size:13px}
+.status{max-width:720px;margin:10px auto 0;font-size:14px;color:var(--muted);min-height:20px}
+.status.err{color:var(--bad)}
+
+.app{display:grid;grid-template-columns:1fr;gap:18px;margin-top:22px}
+@media(min-width:960px){.app{grid-template-columns:400px 1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:var(--sh)}
+.card+.card{margin-top:14px}
+.card h2{font-size:13px;margin:0 0 12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);display:flex;align-items:center;gap:8px}
+.card h2 .n{width:22px;height:22px;border-radius:50%;background:var(--brand);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:12px;letter-spacing:0}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.row>*{flex:1 1 130px}
+label{display:block;font-size:13px;color:var(--muted);margin:10px 0 5px;font-weight:500}
+input[type=number],select{width:100%;font:inherit;padding:10px 11px;border:1px solid var(--line);border-radius:9px;font-size:15px;background:#fff}
+input[type=range]{width:100%;accent-color:var(--brand)}
+.chk{display:flex;align-items:center;gap:9px;font-size:14px;margin-top:9px}
+.chk input{width:18px;height:18px;accent-color:var(--brand)}
+.chk label{margin:0;color:var(--ink);font-weight:400}
 .muted{color:var(--muted);font-size:13px}
-.hint{font-size:13px;color:var(--muted);margin-top:6px}
-.verdict{border-radius:var(--r);padding:16px;color:#fff;margin-bottom:12px}
-.verdict.ok{background:var(--ok)}.verdict.warn{background:var(--warn)}.verdict.bad{background:var(--bad)}.verdict.neutral{background:#3a4a40}
-.verdict h3{margin:0 0 4px;font-size:20px}
-.verdict p{margin:0;opacity:.95}
-.check{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
+.hint{font-size:13px;color:var(--muted);margin-top:8px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{flex:1;border:0;background:#fff;padding:10px 6px;font:inherit;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer}
+.seg button.on{background:var(--brand);color:#fff}
+#map{height:62vh;min-height:380px;border-radius:var(--r);border:1px solid var(--line);z-index:1;box-shadow:var(--sh)}
+.maptools{display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap}
+.legend{font-size:12px;color:var(--muted);display:flex;gap:14px;flex-wrap:wrap}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;margin-right:5px}
+.kv{display:grid;grid-template-columns:1fr auto;gap:7px 16px;font-size:14px}
+.kv span:nth-child(even){font-weight:600;text-align:right}
+.badges{display:flex;flex-wrap:wrap;gap:8px}
+.badge{display:inline-flex;align-items:center;gap:6px;border-radius:9px;padding:6px 10px;font-size:13px;font-weight:600;border:1px solid var(--line);background:#fff}
+.badge i{width:8px;height:8px;border-radius:50%;display:inline-block}
+.badge.ok i{background:var(--ok)}.badge.bad i{background:var(--bad)}.badge.warn i{background:var(--warn)}.badge.na i{background:#b8c0ba}
+.verdict{border-radius:var(--r);padding:18px 20px;color:#fff;margin-bottom:14px}
+.verdict.ok{background:linear-gradient(135deg,#155d33,#1f7a44)}.verdict.warn{background:linear-gradient(135deg,#9a5a05,#b26a0b)}.verdict.bad{background:linear-gradient(135deg,#8f1d17,#b3261e)}.verdict.neutral{background:linear-gradient(135deg,#2b3a31,#3a4a40)}
+.verdict .lbl{font-size:12px;text-transform:uppercase;letter-spacing:.08em;opacity:.8;margin-bottom:4px}
+.verdict h3{margin:0 0 6px;font-size:22px;letter-spacing:-.3px}
+.verdict p{margin:0;opacity:.95;font-size:15px}
+.check{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}
 .check:last-child{border-bottom:0}
-.check .ic{flex:0 0 22px;font-weight:700}
-.check.ok .ic{color:var(--ok)}.check.bad .ic{color:var(--bad)}.check.warn .ic{color:var(--warn)}.check.na .ic{color:var(--muted)}
+.check .ic{flex:0 0 24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff}
+.check.ok .ic{background:var(--ok)}.check.bad .ic{background:var(--bad)}.check.warn .ic{background:var(--warn)}
 .check small{display:block;color:var(--muted)}
-.cta{background:linear-gradient(135deg,#1f6b3a,#2d8a4e);color:#fff;border-radius:var(--r);padding:18px}
-.cta h3{margin:0 0 6px}
-.cta ul{margin:8px 0 12px 18px;padding:0}
-.cta .price{font-size:26px;font-weight:800}
-.cta .btn{background:#fff;color:var(--brand)}
-footer{max-width:1100px;margin:20px auto 40px;padding:0 16px;color:var(--muted);font-size:13px}
+.report h4{margin:16px 0 8px;font-size:14px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.next{margin:0;padding-left:20px;font-size:14px}
+.next li{margin:4px 0}
+.cta{background:var(--ink);color:#fff;border-radius:var(--r);padding:22px;margin-top:14px;display:grid;gap:14px;grid-template-columns:1fr;align-items:center}
+@media(min-width:700px){.cta{grid-template-columns:1fr auto}}
+.cta h3{margin:0 0 6px;font-size:20px}
+.cta ul{margin:6px 0 0 18px;padding:0;font-size:14px;opacity:.9}
+.cta .price{font-size:30px;font-weight:800;letter-spacing:-.5px}
+.cta .btn{background:#fff;color:var(--ink)}
+.cta .btn:hover{background:var(--tint)}
+.cta .hint{color:#c7d0ca}
+section.info{padding:56px 0 8px}
+section.info h2{font-size:clamp(24px,3.4vw,34px);letter-spacing:-.6px;margin:0 0 8px}
+section.info .lead{color:var(--muted);max-width:640px;margin:0 0 24px}
+.cols{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:760px){.cols{grid-template-columns:repeat(3,1fr)}}
+.cols .card{margin:0}
+.cols .card h3{margin:0 0 6px;font-size:17px}
+.cols .card p{margin:0;color:var(--muted);font-size:14px}
+.cols .num{width:34px;height:34px;border-radius:10px;background:var(--tint);color:var(--brand);display:inline-flex;align-items:center;justify-content:center;font-weight:800;margin-bottom:12px}
+.price-card .p{font-size:32px;font-weight:800;letter-spacing:-.8px;margin:6px 0}
+.price-card .p small{font-size:14px;font-weight:500;color:var(--muted)}
+.price-card ul{padding-left:18px;margin:10px 0 16px;font-size:14px;color:var(--muted)}
+.price-card.hl{border-color:var(--brand);box-shadow:0 0 0 3px var(--tint)}
+.faq details{border-bottom:1px solid var(--line);padding:12px 0}
+.faq details:last-child{border-bottom:0}
+.faq summary{cursor:pointer;font-weight:600;font-size:15px}
+.faq p{color:var(--muted);font-size:14px;margin:8px 0 0}
+footer{border-top:1px solid var(--line);margin-top:56px;padding:28px 0 48px;color:var(--muted);font-size:13px}
+footer .in{max-width:1180px;margin:0 auto;padding:0 20px;display:grid;gap:18px;grid-template-columns:1fr}
+@media(min-width:760px){footer .in{grid-template-columns:2fr 1fr 1fr}}
+footer b{color:var(--ink)}
 .hidden{display:none!important}
-.pill{display:inline-block;background:var(--brand2);color:var(--brand);border-radius:99px;padding:2px 10px;font-size:12px;font-weight:600}
-.legend{font-size:12px;color:var(--muted);margin-top:6px}
-.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;margin-right:4px}
-.faq details{border-bottom:1px solid var(--line);padding:8px 0}
-.faq summary{cursor:pointer;font-weight:600}
-.err{color:var(--bad);font-size:14px}
+.err{color:var(--bad)}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid #cfd8d1;border-top-color:var(--brand);border-radius:50%;animation:sp .8s linear infinite;vertical-align:-2px;margin-right:6px}
+@keyframes sp{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
-<header><span class="logo">Kan jeg bygge?</span><span class="tag">Forhåndssjekk av garasje, tilbygg og terrasse</span></header>
-<main>
-<section class="hero">
-  <h1>Skriv inn adressen. Tegn det du vil bygge. Få svar.</h1>
-  <p>Vi henter tomtegrensene dine fra Kartverket, måler avstanden til naboen, regner ut hvor mye av tomta du bruker, og sjekker mot reglene for hva du kan bygge uten å søke.</p>
+<nav><div class="in">
+  <a class="logo" href="#"><i></i>Kan jeg bygge?</a>
+  <div class="links"><a href="#slik">Slik virker det</a><a href="#priser">Priser</a><a href="#proff">For proffer</a><a href="#faq">Spørsmål</a></div>
+</div></nav>
+
+<section class="hero wrap">
+  <span class="eyebrow">Gratis forhåndssjekk · hele Norge</span>
+  <h1>Finn ut hva du kan bygge på tomta di, før du spør kommunen.</h1>
+  <p>Vi henter tomtegrensene, planen og farekartene for der du står, tegner garasjen eller tilbygget på tomta, og sier om du må søke, om du er for nær naboen, og hvor mye av tomta du bruker.</p>
+  <div class="searchbar">
+    <div class="field"><input id="q" type="text" placeholder="Skriv adressen din …" autocomplete="off" aria-label="Adresse"><div id="sugg" class="sugg hidden"></div></div>
+    <button class="btn" id="geo" type="button">Bruk min posisjon</button>
+  </div>
+  <div id="status" class="status"></div>
+  <div class="trust">Data fra Kartverket, NVE og kommunen din. Ingenting lagres.</div>
 </section>
 
-<div class="grid">
+<div class="wrap app" id="app">
 <div>
-  <div class="card">
-    <h2>1. Adresse</h2>
-    <div class="search">
-      <input id="q" type="text" placeholder="F.eks. Storgata 10, Lillehammer" autocomplete="off">
-      <div id="sugg" class="sugg hidden"></div>
+  <div class="card" id="tomtcard">
+    <h2><span class="n">1</span> Tomta og området</h2>
+    <div id="tomtinfo" class="muted">Velg adresse eller bruk posisjonen din.</div>
+    <div id="around" class="hidden">
+      <label>Farekart fra NVE</label>
+      <div class="badges" id="hazards"></div>
+      <label>Planen for tomta</label>
+      <div id="planinfo" class="muted"></div>
+      <div id="kommunelinks" class="hint"></div>
     </div>
-    <div id="tomtinfo" class="hint">Begynn å skrive, og velg adressen fra lista.</div>
   </div>
 
-  <div class="card" id="tiltakcard">
-    <h2>2. Hva vil du bygge?</h2>
-    <label>Type</label>
-    <select id="type">
-      <option value="garasje">Garasje, uthus eller bod (frittliggende)</option>
-      <option value="tilbygg">Tilbygg på huset</option>
-      <option value="terrasse">Terrasse eller platting</option>
-    </select>
+  <div class="card">
+    <h2><span class="n">2</span> Hva vil du bygge?</h2>
+    <div class="seg" id="typeseg">
+      <button type="button" data-t="garasje" class="on">Garasje / uthus</button>
+      <button type="button" data-t="tilbygg">Tilbygg</button>
+      <button type="button" data-t="terrasse">Terrasse</button>
+    </div>
+    <select id="type" class="hidden"><option value="garasje">garasje</option><option value="tilbygg">tilbygg</option><option value="terrasse">terrasse</option></select>
     <div class="row">
       <div><label>Lengde (m)</label><input id="len" type="number" step="0.1" min="1" value="6"></div>
       <div><label>Bredde (m)</label><input id="wid" type="number" step="0.1" min="1" value="4"></div>
@@ -107,150 +179,225 @@ footer{max-width:1100px;margin:20px auto 40px;padding:0 16px;color:var(--muted);
       <div><label>Høyde over terreng (m)</label><input id="thoyde" type="number" step="0.1" min="0" value="0.6"></div>
       <div><label>Utstikk fra husvegg (m)</label><input id="utstikk" type="number" step="0.1" min="0" value="3"></div>
     </div>
-    <label>Rotasjon</label><input id="rot" type="range" min="0" max="180" value="0">
+    <label>Rotasjon <span id="rotv" class="muted">0°</span></label><input id="rot" type="range" min="0" max="180" value="0">
     <div id="garasjeopts">
-      <div class="chk"><input id="bebo" type="checkbox"><label for="bebo" style="margin:0">Skal brukes til beboelse (soverom, hybel)</label></div>
-      <div class="chk"><input id="kjeller" type="checkbox"><label for="kjeller" style="margin:0">Har kjeller eller flere etasjer</label></div>
+      <div class="chk"><input id="bebo" type="checkbox"><label for="bebo">Skal brukes til beboelse (soverom, hybel)</label></div>
+      <div class="chk"><input id="kjeller" type="checkbox"><label for="kjeller">Har kjeller eller flere etasjer</label></div>
     </div>
-    <p class="hint">Klikk på tomta i kartet for å plassere bygget. Dra det rundt etterpå.</p>
+    <p class="hint" id="placehint">Klikk på tomta i kartet for å plassere bygget. Dra det etterpå.</p>
   </div>
 
-  <div class="card" id="plancard">
-    <h2>3. Tomta og planen</h2>
+  <div class="card">
+    <h2><span class="n">3</span> Utnyttelse og avstand</h2>
     <div class="row">
-      <div><label>Eksisterende bebygd areal, BYA (m²)</label><input id="exbya" type="number" step="1" min="0" placeholder="hent eller skriv"></div>
-      <div><label>Parkeringsplasser som teller (18 m² hver)</label><input id="park" type="number" step="1" min="0" value="0"></div>
+      <div><label>Eksisterende BYA (m²)</label><input id="exbya" type="number" step="1" min="0" placeholder="hentes fra kart"></div>
+      <div><label>P-plasser som teller (18 m² hver)</label><input id="park" type="number" step="1" min="0" value="0"></div>
     </div>
-    <button class="btn sec" id="osmbtn" type="button" disabled>Hent eksisterende bygg fra kart</button>
-    <div class="hint" id="osmhint">Bygningsomriss fra OpenStreetMap. Sjekk at tallet stemmer med byggesaken din.</div>
+    <div class="hint" id="osmhint"></div>
     <div class="row">
-      <div><label>Maks utnyttelse i planen (%-BYA)</label><input id="maxbya" type="number" step="1" min="0" placeholder="f.eks. 24"></div>
-      <div><label>Krav til avstand fra nabogrense (m)</label><input id="mindist" type="number" step="0.5" min="0" value="4"></div>
+      <div><label>Maks %-BYA i planen</label><input id="maxbya" type="number" step="1" min="0" placeholder="f.eks. 24"></div>
+      <div><label>Avstandskrav nabogrense (m)</label><input id="mindist" type="number" step="0.5" min="0" value="4"></div>
     </div>
-    <div id="planinfo" class="hint">Velg en adresse, så finner vi planen der vi kan.</div>
+    <button class="btn sec sm" id="osmbtn" type="button" style="margin-top:12px" disabled>Hent bygg fra kart på nytt</button>
   </div>
 </div>
 
 <div>
   <div id="map"></div>
-  <div class="legend"><i style="background:#1f6b3a"></i>Din tomt &nbsp; <i style="background:#9aa79f"></i>Nabotomter &nbsp; <i style="background:#e0a100"></i>Nytt bygg &nbsp; <i style="background:#7a5c3a"></i>Eksisterende bygg</div>
+  <div class="maptools">
+    <div class="legend"><span><i style="background:#155d33"></i>Din tomt</span><span><i style="background:#9aa79f"></i>Naboer</span><span><i style="background:#e0a100"></i>Nytt bygg</span><span><i style="background:#7a5c3a"></i>Eksisterende</span></div>
+    <div style="margin-left:auto" class="seg" id="baseseg"><button type="button" data-b="topo" class="on">Kart</button><button type="button" data-b="graa">Grått</button></div>
+  </div>
 
-  <div class="card" id="resultcard" style="margin-top:16px">
+  <div class="card report" style="margin-top:16px" id="resultcard">
     <h2>Resultat</h2>
-    <div id="result"><p class="muted">Velg adresse og plasser bygget, så kommer svaret her.</p></div>
+    <div id="result"><p class="muted">Velg adresse og plasser bygget, så kommer rapporten her.</p></div>
   </div>
 
-  <div class="cta" id="cta" style="margin-top:16px">
-    <h3>Vil du ha alt klart til å sende?</h3>
-    <ul>
-      <li>Situasjonskart med mål og avstander</li>
-      <li>Ferdig nabovarsel til alle naboene</li>
-      <li>Dispensasjonssøknad med begrunnelse, hvis du trenger det</li>
-      <li>Sjekkliste mot kommunens krav før du sender</li>
-    </ul>
-    <div class="row" style="align-items:center">
-      <div><span class="price" id="price">349 kr</span> <span class="muted" style="color:#dfeee4">engangsbeløp</span></div>
-      <div style="text-align:right"><a class="btn" id="buy" href="#" target="_blank" rel="noopener">Bestill pakken</a></div>
+  <div class="cta" id="cta">
+    <div>
+      <h3 id="ctah">Vil du ha alt klart til å sende?</h3>
+      <ul>
+        <li>Situasjonskart med mål og avstander</li>
+        <li>Ferdig nabovarsel til alle naboene</li>
+        <li>Dispensasjonssøknad med begrunnelse, hvis du trenger det</li>
+        <li>Sjekkliste mot kommunens krav før du sender</li>
+      </ul>
+      <p class="hint" id="ctahint"></p>
     </div>
-    <p class="hint" style="color:#dfeee4" id="ctahint"></p>
+    <div style="text-align:center">
+      <div class="price" id="price">349 kr</div>
+      <div class="hint" style="margin:0 0 10px">engangsbeløp</div>
+      <a class="btn" id="buy" href="#" target="_blank" rel="noopener">Bestill pakken</a>
+    </div>
   </div>
 </div>
 </div>
 
-<div class="card faq" style="margin-top:16px">
+<section class="info wrap" id="slik">
+  <h2>Slik virker det</h2>
+  <p class="lead">Tre steg, to minutter. Alt skjer i nettleseren din, og vi bruker bare åpne, offentlige data.</p>
+  <div class="cols">
+    <div class="card"><div class="num">1</div><h3>Finn tomta</h3><p>Bruk posisjonen din eller skriv adressen. Vi henter tomtegrensene fra Kartverket, kommunen og planen der vi har den, og farekart for flom og skred fra NVE.</p></div>
+    <div class="card"><div class="num">2</div><h3>Tegn bygget</h3><p>Velg garasje, tilbygg eller terrasse, sett mål og høyder, og klikk der det skal stå. Vi måler avstanden til naboen og regner ut utnyttelsen.</p></div>
+    <div class="card"><div class="num">3</div><h3>Få svar</h3><p>Rapporten sier om du kan bygge uten å søke, om du kan søke selv, eller om du trenger fagfolk og dispensasjon. Hvert punkt viser regelen det bygger på.</p></div>
+  </div>
+</section>
+
+<section class="info wrap" id="priser">
+  <h2>Priser</h2>
+  <p class="lead">Sjekken er gratis. Betal bare hvis du vil ha papirene klare.</p>
+  <div class="cols">
+    <div class="card price-card"><h3>Sjekk</h3><div class="p">0 kr</div><ul><li>Tomtegrenser og planoppslag</li><li>Avstand, utnyttelse, regler</li><li>Farekart fra NVE</li></ul><a class="btn sec" href="#app">Start sjekken</a></div>
+    <div class="card price-card hl"><h3>Pakke</h3><div class="p">349 kr <small>/ 499 kr med dispensasjon</small></div><ul><li>Situasjonskart med mål</li><li>Nabovarsel til alle naboer</li><li>Dispensasjonssøknad ved behov</li><li>Sjekkliste før innsending</li></ul><a class="btn" href="#cta">Bestill etter sjekken</a></div>
+    <div class="card price-card" id="proff"><h3>Proff</h3><div class="p">990 kr <small>/ mnd</small></div><ul><li>Mangelsjekk av søknader før innsending</li><li>Ubegrenset antall saker</li><li>For byggmestere, arkitekter og ansvarlige søkere</li></ul><a class="btn sec" id="proffbtn" href="#">Ta kontakt</a></div>
+  </div>
+</section>
+
+<section class="info wrap faq" id="faq">
   <h2>Vanlige spørsmål</h2>
-  <details><summary>Hva kan jeg bygge uten å søke?</summary><p>Frittliggende garasje, uthus eller bod på inntil 50 m² (BYA og BRA), med mønehøyde inntil 4,0 m og gesimshøyde inntil 3,0 m, minst 1,0 m fra nabogrense og andre bygg. Tilbygg på inntil 15 m². Terrasse inntil 1,0 m over bakken, inntil 4,0 m ut fra veggen og minst 1,0 m fra nabogrense. Alt må være i tråd med planen for tomta, og du må melde fra til kommunen innen fire uker etter at det er ferdig. Kilde: byggesaksforskriften § 4-1.</p></details>
-  <details><summary>Hva er BYA og utnyttelsesgrad?</summary><p>BYA er «fotavtrykket» til alt som står på tomta, inkludert garasje, terrasse høyere enn 0,5 m og ofte 18 m² per parkeringsplass. Utnyttelsesgrad (%-BYA) er BYA delt på tomtearealet. Planen for tomta setter et tak, ofte mellom 20 og 30 prosent i småhusområder.</p></details>
-  <details><summary>Hvor finner jeg maks utnyttelse og avstandskrav?</summary><p>I reguleringsplanen eller kommuneplanen for tomta. I Oslo henter vi det automatisk. Ellers finner du det i kommunens planinnsyn, lenken kommer når du har valgt adresse.</p></details>
-  <details><summary>Er dette juridisk bindende?</summary><p>Nei. Dette er en forhåndssjekk basert på åpne kartdata og nasjonale regler. Kommunen avgjør. Grenser i kartet kan ha unøyaktighet på flere desimeter, særlig på eldre tomter.</p></details>
-</div>
-</main>
-<footer>
-  Data: Kartverket (adresser, eiendomsgrenser), Oslo kommune Plan- og bygningsetaten (plandata i Oslo), OpenStreetMap (bygninger). Regler: plan- og bygningsloven § 29-4, byggesaksforskriften (SAK10) § 3-1 og § 4-1, byggteknisk forskrift (TEK17) § 5-2. Tjenesten gir ikke juridisk rådgivning.
-</footer>
+  <div class="card">
+    <details><summary>Hva kan jeg bygge uten å søke?</summary><p>Frittliggende garasje, uthus eller bod på inntil 50 m² (BYA og BRA), mønehøyde inntil 4,0 m og gesimshøyde inntil 3,0 m, minst 1,0 m fra nabogrense og andre bygg. Tilbygg på inntil 15 m². Terrasse inntil 1,0 m over bakken, inntil 4,0 m ut fra veggen og minst 1,0 m fra nabogrense. Alt må være i tråd med planen for tomta, og du må melde fra til kommunen innen fire uker etter at det er ferdig. Kilde: byggesaksforskriften § 4-1.</p></details>
+    <details><summary>Hva er BYA og utnyttelsesgrad?</summary><p>BYA er «fotavtrykket» til alt som står på tomta, inkludert garasje, terrasse høyere enn 0,5 m og ofte 18 m² per parkeringsplass. Utnyttelsesgrad (%-BYA) er BYA delt på tomtearealet. Planen setter et tak, ofte mellom 20 og 30 prosent i småhusområder.</p></details>
+    <details><summary>Hvor finner jeg maks utnyttelse og avstandskrav?</summary><p>I reguleringsplanen eller kommuneplanen for tomta. I Oslo henter vi plan og formål automatisk og lenker til bestemmelsene. Ellers får du lenke til kommunens planregister når du har valgt adresse.</p></details>
+    <details><summary>Hva betyr farekartene?</summary><p>NVE sine aktsomhetskart viser hvor det kan være fare for flom, kvikkleireskred, jord- og flomskred, steinsprang og snøskred. Treff betyr ikke at du ikke får bygge, men at kommunen vil kreve en vurdering av sikkerheten (TEK17 kapittel 7).</p></details>
+    <details><summary>Er dette juridisk bindende?</summary><p>Nei. Dette er en forhåndssjekk basert på åpne kartdata og nasjonale regler. Kommunen avgjør. Grenser i kartet kan avvike med flere desimeter, særlig på eldre tomter.</p></details>
+    <details><summary>Hva skjer med posisjonen min?</summary><p>Den brukes bare i nettleseren din til å finne nærmeste adresse hos Kartverket. Vi lagrer ingenting, og det finnes ingen server hos oss som ser den.</p></details>
+  </div>
+</section>
+
+<footer><div class="in">
+  <div><b>Kan jeg bygge?</b><br>Forhåndssjekk av byggesaker for privatpersoner og proffer. Tjenesten gir ikke juridisk rådgivning. Kommunen avgjør alltid.</div>
+  <div><b>Datakilder</b><br>Kartverket (adresser, eiendomsgrenser, kart)<br>NVE (flom- og skredfare)<br>Oslo kommune PBE (plandata)<br>OpenStreetMap (bygninger)</div>
+  <div><b>Regler</b><br>Plan- og bygningsloven § 29-4<br>Byggesaksforskriften § 3-1 og § 4-1<br>Byggteknisk forskrift § 5-2<br><a href="mailto:sgrimen06@gmail.com">Kontakt</a></div>
+</div></footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Turf.js/6.5.0/turf.min.js"></script>
 <script>
 // ---------- Konfigurasjon ----------
-const STRIPE_LINK = ""; // Stripe Payment Link for pakken. Tom = viser interesse-knapp.
+const STRIPE_LINK = ""; // Stripe Payment Link for pakken. Tom = bestilling via e-post.
 const CONTACT = "sgrimen06@gmail.com";
-
 const API = {
   adr: "https://ws.geonorge.no/adresser/v1/sok",
+  punkt: "https://ws.geonorge.no/adresser/v1/punktsok",
+  kommune: "https://api.kartverket.no/kommuneinfo/v1/punkt",
   teig: "https://wfs.geonorge.no/skwms1/wfs.matrikkelen-eiendomskart-teig",
   overpass: ["https://overpass-api.de/api/interpreter", "https://z.overpass-api.de/api/interpreter", "https://overpass.private.coffee/api/interpreter"],
-  osloWms: "https://od2.pbe.oslo.kommune.no/cgi-bin/wms"
+  osloWms: "https://od2.pbe.oslo.kommune.no/cgi-bin/wms",
+  nve: "https://kart.nve.no/enterprise/services/"
 };
+const HAZARDS = [
+  { key: 'flom', name: 'Flom', svc: 'FlomAktsomhet/MapServer/WMSServer', layer: 'Flom_aktsomhetsomrade' },
+  { key: 'kvikk', name: 'Kvikkleire', svc: 'SkredKvikkleire2/MapServer/WmsServer', layer: 'KvikkleireFaregrad' },
+  { key: 'jord', name: 'Jord- og flomskred', svc: 'SkredJordFlomAktR1/MapServer/WmsServer', layer: 'Potensielt_Jord-Flomskredfare' },
+  { key: 'stein', name: 'Steinsprang', svc: 'SkredSteinAktR/MapServer/WmsServer', layer: 'Utlopsomrade' },
+  { key: 'sno', name: 'Snøskred', svc: 'SkredSnoAktR/MapServer/WmsServer', layer: 'Utlopsomrade' }
+];
 
 // ---------- Tilstand ----------
-const S = {
-  addr: null, pt: null, teig: null, neighbors: [], teigLayer: null, nbLayer: null,
-  center: null, rect: null, rectLayer: null, marker: null,
-  buildings: [], bLayer: null, plan: {}
-};
+const S = { addr: null, pt: null, teig: null, teigArea: 0, neighbors: [], teigLayer: null, nbLayer: null, center: null, rect: null, rectLayer: null, marker: null, buildings: [], bLayer: null, plan: {}, hazards: {}, kommune: null };
 
 // ---------- Kart ----------
 const map = L.map('map', { zoomControl: true }).setView([64.5, 12], 4);
-L.tileLayer('https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png', {
-  maxZoom: 20, attribution: '&copy; Kartverket'
-}).addTo(map);
+const BASES = {
+  topo: L.tileLayer('https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/{z}/{y}/{x}.png', { maxZoom: 20, attribution: '&copy; Kartverket' }),
+  graa: L.tileLayer('https://cache.kartverket.no/v1/wmts/1.0.0/topograatone/default/webmercator/{z}/{y}/{x}.png', { maxZoom: 20, attribution: '&copy; Kartverket' })
+};
+BASES.topo.addTo(map);
+document.querySelectorAll('#baseseg button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('#baseseg button').forEach(x => x.classList.remove('on')); b.classList.add('on');
+  Object.values(BASES).forEach(l => map.removeLayer(l)); BASES[b.dataset.b].addTo(map);
+});
 
 // ---------- Hjelpere ----------
 const $ = id => document.getElementById(id);
 const num = id => parseFloat($(id).value) || 0;
 const fmt = (n, d = 1) => (Math.round(n * 10 ** d) / 10 ** d).toLocaleString('nb-NO');
+const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const title = s => String(s || '').toLowerCase().replace(/(^|[\s-])\S/g, c => c.toUpperCase());
 function debounce(fn, ms) { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; }
+function setStatus(msg, err) { $('status').innerHTML = msg; $('status').classList.toggle('err', !!err); }
 
 // ---------- Adressesøk ----------
 $('q').addEventListener('input', debounce(async e => {
   const q = e.target.value.trim();
   if (q.length < 3) { $('sugg').classList.add('hidden'); return; }
   try {
-    const r = await fetch(`${API.adr}?sok=${encodeURIComponent(q)}&treffPerSide=8&fuzzy=true`);
-    const j = await r.json();
+    const j = await (await fetch(`${API.adr}?sok=${encodeURIComponent(q)}&treffPerSide=8&fuzzy=true`)).json();
     const box = $('sugg'); box.innerHTML = '';
     (j.adresser || []).forEach(a => {
       const d = document.createElement('div');
-      d.innerHTML = `${a.adressetekst}<small>${a.postnummer} ${a.poststed} · ${a.kommunenavn} · gnr/bnr ${a.gardsnummer}/${a.bruksnummer}</small>`;
+      d.innerHTML = `${esc(a.adressetekst)}<small>${esc(a.postnummer)} ${esc(a.poststed)} · ${esc(a.kommunenavn)} · gnr/bnr ${a.gardsnummer}/${a.bruksnummer}</small>`;
       d.onclick = () => selectAddress(a);
       box.appendChild(d);
     });
     box.classList.toggle('hidden', !(j.adresser || []).length);
   } catch (err) { console.error(err); }
 }, 250));
-document.addEventListener('click', e => { if (!e.target.closest('.search')) $('sugg').classList.add('hidden'); });
+document.addEventListener('click', e => { if (!e.target.closest('.field')) $('sugg').classList.add('hidden'); });
+$('q').addEventListener('keydown', e => { if (e.key === 'Enter') { const f = document.querySelector('#sugg div'); if (f) f.click(); } });
 
-async function selectAddress(a) {
+// ---------- Posisjon ----------
+$('geo').onclick = () => {
+  if (!navigator.geolocation) { setStatus('Nettleseren din støtter ikke posisjon. Skriv adressen i stedet.', true); return; }
+  setStatus('<span class="spin"></span>Finner posisjonen din …');
+  navigator.geolocation.getCurrentPosition(async pos => {
+    try { await fromPoint(pos.coords.latitude, pos.coords.longitude, pos.coords.accuracy); }
+    catch (e) { setStatus('Fant ingen adresse der du er. Skriv adressen i stedet.', true); }
+  }, err => {
+    setStatus(err.code === 1 ? 'Du sa nei til posisjon. Skriv adressen i stedet, eller tillat posisjon i nettleseren.' : 'Fikk ikke posisjonen. Skriv adressen i stedet.', true);
+  }, { enableHighAccuracy: true, timeout: 12000, maximumAge: 60000 });
+};
+async function fromPoint(lat, lon, acc) {
+  const j = await (await fetch(`${API.punkt}?lat=${lat}&lon=${lon}&radius=${Math.max(40, Math.min(150, Math.round(acc || 40)))}&treffPerSide=5`)).json();
+  const a = (j.adresser || [])[0];
+  if (!a) throw new Error('none');
+  setStatus(`Nærmeste adresse: <b>${esc(a.adressetekst)}, ${esc(a.poststed)}</b>${acc ? ` (posisjon ±${Math.round(acc)} m)` : ''}. Feil adresse? Skriv den riktige over.`);
+  await selectAddress(a, { silent: true });
+}
+
+// ---------- Velg adresse ----------
+async function selectAddress(a, opt = {}) {
   $('sugg').classList.add('hidden');
   $('q').value = `${a.adressetekst}, ${a.postnummer} ${a.poststed}`;
   S.addr = a; S.pt = [a.representasjonspunkt.lon, a.representasjonspunkt.lat];
-  S.center = null; S.rect = null; S.buildings = [];
-  $('tomtinfo').textContent = 'Henter tomtegrenser fra Kartverket …';
-  $('exbya').value = '';
+  S.center = null; S.rect = null; S.buildings = []; S.plan = {}; S.hazards = {};
+  if (S.rectLayer) { map.removeLayer(S.rectLayer); S.rectLayer = null; }
+  if (S.marker) { map.removeLayer(S.marker); S.marker = null; }
+  if (S.bLayer) { map.removeLayer(S.bLayer); S.bLayer = null; }
+  $('exbya').value = ''; $('maxbya').value = ''; $('maxbya').placeholder = 'f.eks. 24'; $('osmhint').textContent = '';
+  $('result').innerHTML = '<p class="muted">Klikk på tomta i kartet for å plassere bygget.</p>';
+  if (!opt.silent) setStatus('<span class="spin"></span>Henter tomt, plan og farekart …');
+  $('tomtinfo').innerHTML = '<span class="spin"></span>Henter tomtegrenser fra Kartverket …';
+  $('around').classList.add('hidden');
   try {
     await loadTeig();
-    await loadPlan();
+    try { history.replaceState(null, '', '?adr=' + encodeURIComponent($('q').value)); } catch (e) { }
+    $('app').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    $('around').classList.remove('hidden');
+    await Promise.all([loadPlan(), loadHazards(), loadKommune(), loadBuildings()]);
     $('osmbtn').disabled = false;
+    if (!opt.silent) setStatus('');
     render();
   } catch (err) {
     console.error(err);
-    $('tomtinfo').innerHTML = `<span class="err">Fant ikke tomtegrensene. ${err.message}</span>`;
+    $('tomtinfo').innerHTML = `<span class="err">Fant ikke tomtegrensene. ${esc(err.message)}</span>`;
+    setStatus('');
   }
 }
 
 // ---------- Teig fra Kartverket WFS ----------
 async function loadTeig() {
   const [lon, lat] = S.pt, d = 0.0012;
-  const url = `${API.teig}?service=WFS&version=2.0.0&request=GetFeature&typeNames=app:Teig&count=60&srsName=EPSG:4258&bbox=${lon - d},${lat - d / 2},${lon + d},${lat + d / 2},EPSG:4258`;
+  const url = `${API.teig}?service=WFS&version=2.0.0&request=GetFeature&typeNames=app:Teig&count=80&srsName=EPSG:4258&bbox=${lon - d},${lat - d / 2},${lon + d},${lat + d / 2},EPSG:4258`;
   const xml = await (await fetch(url)).text();
   const doc = new DOMParser().parseFromString(xml, 'text/xml');
   const feats = [];
   doc.querySelectorAll('Teig').forEach(t => {
     const polys = [];
     t.querySelectorAll('Polygon').forEach(p => {
-      const ext = p.querySelector('exterior posList');
-      if (!ext) return;
+      const ext = p.querySelector('exterior posList'); if (!ext) return;
       const rings = [toRing(ext.textContent)];
       p.querySelectorAll('interior posList').forEach(i => rings.push(toRing(i.textContent)));
       polys.push(rings);
@@ -258,25 +405,16 @@ async function loadTeig() {
     if (!polys.length) return;
     const me = t.querySelector('Matrikkelenhet');
     const g = v => me && me.querySelector(v) ? me.querySelector(v).textContent : '';
-    const props = {
-      knr: g('kommunenummer'), gnr: g('gardsnummer'), bnr: g('bruksnummer'), fnr: g('festenummer'), snr: g('seksjonsnummer'),
-      kommune: t.querySelector('kommunenavn') ? t.querySelector('kommunenavn').textContent : '',
-      teigId: t.querySelector('teigId') ? t.querySelector('teigId').textContent : ''
-    };
-    const geom = polys.length === 1 ? turf.polygon(polys[0], props) : turf.multiPolygon(polys, props);
-    feats.push(geom);
+    const props = { knr: g('kommunenummer'), gnr: g('gardsnummer'), bnr: g('bruksnummer'), fnr: g('festenummer'), snr: g('seksjonsnummer'), kommune: t.querySelector('kommunenavn') ? t.querySelector('kommunenavn').textContent : '' };
+    feats.push(polys.length === 1 ? turf.polygon(polys[0], props) : turf.multiPolygon(polys, props));
   });
   if (!feats.length) throw new Error('Ingen eiendomsteiger i området.');
   const p = turf.point(S.pt);
   let mine = feats.find(f => turf.booleanPointInPolygon(p, f));
-  if (!mine) {
-    // fall tilbake på gnr/bnr fra adressen
-    mine = feats.find(f => f.properties.gnr == S.addr.gardsnummer && f.properties.bnr == S.addr.bruksnummer) || feats[0];
-  }
-  S.teig = mine; S.neighbors = feats.filter(f => f !== mine);
-  S.teigArea = turf.area(mine);
-  const pr = mine.properties;
-  $('tomtinfo').innerHTML = `<span class="pill">${pr.kommune}</span> gnr/bnr <b>${pr.gnr}/${pr.bnr}${pr.fnr && pr.fnr !== '0' ? '/' + pr.fnr : ''}</b> · tomteareal <b>${fmt(S.teigArea, 0)} m²</b>`;
+  if (!mine) mine = feats.find(f => f.properties.gnr == S.addr.gardsnummer && f.properties.bnr == S.addr.bruksnummer) || feats[0];
+  S.teig = mine; S.neighbors = feats.filter(f => f !== mine); S.teigArea = turf.area(mine);
+  const pr = mine.properties, kn = title(pr.kommune || S.addr.kommunenavn);
+  $('tomtinfo').innerHTML = `<div class="kv"><span>Kommune</span><span>${esc(kn)}</span><span>Gnr/bnr</span><span>${esc(pr.gnr)}/${esc(pr.bnr)}${pr.fnr && pr.fnr !== '0' ? '/' + esc(pr.fnr) : ''}</span><span>Tomteareal</span><span>${fmt(S.teigArea, 0)} m²</span><span>Nabotomter i kartet</span><span>${S.neighbors.length}</span></div>`;
   drawTeig();
 }
 function toRing(txt) {
@@ -288,22 +426,59 @@ function toRing(txt) {
 function drawTeig() {
   if (S.teigLayer) map.removeLayer(S.teigLayer);
   if (S.nbLayer) map.removeLayer(S.nbLayer);
-  S.nbLayer = L.geoJSON(turf.featureCollection(S.neighbors), { style: { color: '#9aa79f', weight: 1.5, fillOpacity: .05 } }).addTo(map);
-  S.teigLayer = L.geoJSON(S.teig, { style: { color: '#1f6b3a', weight: 3, fillOpacity: .08 } }).addTo(map);
-  map.fitBounds(S.teigLayer.getBounds().pad(0.3));
+  S.nbLayer = L.geoJSON(turf.featureCollection(S.neighbors), { style: { color: '#9aa79f', weight: 1.5, fillOpacity: .04 } }).addTo(map);
+  S.teigLayer = L.geoJSON(S.teig, { style: { color: '#155d33', weight: 3, fillOpacity: .08 } }).addTo(map);
+  map.invalidateSize();
+  map.fitBounds(S.teigLayer.getBounds().pad(0.35));
+}
+
+// ---------- Kommune ----------
+async function loadKommune() {
+  try { const [lon, lat] = S.pt; S.kommune = await (await fetch(`${API.kommune}?nord=${lat}&ost=${lon}&koordsys=4258`)).json(); }
+  catch (e) { S.kommune = null; }
+  const knr = (S.kommune && S.kommune.kommunenummer) || S.teig.properties.knr || S.addr.kommunenummer;
+  const kn = title((S.kommune && S.kommune.kommunenavn) || S.addr.kommunenavn);
+  const links = [
+    `<a href="https://seeiendom.kartverket.no/?adresse=${encodeURIComponent($('q').value)}" target="_blank" rel="noopener">Se eiendom</a>`,
+    knr === '0301' ? `<a href="https://od2.pbe.oslo.kommune.no/kart/" target="_blank" rel="noopener">Planinnsyn Oslo</a>` : `<a href="https://arealplaner.no/${knr}" target="_blank" rel="noopener">Planregister ${esc(kn)}</a>`,
+    `<a href="https://www.google.com/search?q=${encodeURIComponent('byggesak ' + kn + ' kommune')}" target="_blank" rel="noopener">Byggesak i ${esc(kn)}</a>`,
+    `<a href="https://dibk.no/bygge-eller-endre/" target="_blank" rel="noopener">DiBK: bygge eller endre</a>`
+  ];
+  $('kommunelinks').innerHTML = 'Lenker: ' + links.join(' · ');
+}
+
+// ---------- Farekart fra NVE ----------
+async function loadHazards() {
+  const [lon, lat] = S.pt, dx = 0.0015, dy = 0.00075;
+  const bbox = `${lat - dy},${lon - dx},${lat + dy},${lon + dx}`; // WMS 1.3 + EPSG:4326 = lat,lon
+  $('hazards').innerHTML = HAZARDS.map(h => `<span class="badge na" id="hz-${h.key}"><i></i>${h.name}: sjekker …</span>`).join('');
+  await Promise.all(HAZARDS.map(async h => {
+    const el = $('hz-' + h.key);
+    try {
+      const u = `${API.nve}${h.svc}?service=WMS&version=1.3.0&request=GetFeatureInfo&layers=${h.layer}&query_layers=${h.layer}&styles=&crs=EPSG:4326&bbox=${bbox}&width=200&height=100&i=100&j=50&info_format=application/geo%2Bjson&feature_count=3`;
+      const r = await fetch(u); if (!r.ok) throw new Error('HTTP ' + r.status);
+      const j = await r.json();
+      const hit = !!(j.features && j.features.length);
+      S.hazards[h.key] = hit ? (j.features[0].properties || {}) : null;
+      el.className = 'badge ' + (hit ? 'warn' : 'ok');
+      let extra = '';
+      if (hit && h.key === 'kvikk') { const p = j.features[0].properties || {}; const fg = p.skredFaregrad || p.faregrad || p.FAREGRAD; if (fg) extra = ' (' + esc(fg) + ')'; }
+      el.innerHTML = `<i></i>${h.name}: ${hit ? 'innenfor aktsomhetsområde' + extra : 'ingen treff'}`;
+    } catch (e) { S.hazards[h.key] = undefined; el.className = 'badge na'; el.innerHTML = `<i></i>${h.name}: fikk ikke svar`; }
+  }));
 }
 
 // ---------- Plandata ----------
 async function loadPlan() {
   S.plan = {};
   const knr = S.teig.properties.knr || S.addr.kommunenummer;
-  const kname = S.teig.properties.kommune || S.addr.kommunenavn;
+  const kname = title(S.addr.kommunenavn);
   if (knr === '0301') {
-    $('planinfo').textContent = 'Henter plan fra Oslo kommune …';
+    $('planinfo').innerHTML = '<span class="spin"></span>Henter plan fra Oslo kommune …';
     try { await loadOsloPlan(); } catch (e) { console.warn(e); }
   }
   if (!S.plan.source) {
-    $('planinfo').innerHTML = `Vi henter ikke planen automatisk i ${kname} ennå. Finn maks %-BYA og avstandskrav i <a href="https://arealplaner.no/${knr}" target="_blank" rel="noopener">kommunens planregister</a> eller <a href="https://seeiendom.kartverket.no/?adresse=${encodeURIComponent($('q').value)}" target="_blank" rel="noopener">Se eiendom</a>, og skriv dem inn over.`;
+    $('planinfo').innerHTML = `Vi henter ikke planen automatisk i ${esc(kname)} ennå. Finn maks %-BYA og avstandskrav i kommunens planregister (lenke under) og skriv dem inn i steg 3.`;
   }
 }
 async function loadOsloPlan() {
@@ -312,41 +487,33 @@ async function loadOsloPlan() {
   const gfi = async layer => {
     const u = `${API.osloWms}?map=REGULERING&service=WMS&version=1.1.1&request=GetFeatureInfo&layers=${layer}&query_layers=${layer}&styles=&srs=EPSG:4326&bbox=${bbox}&width=200&height=100&x=100&y=50&info_format=application/vnd.ogc.gml&feature_count=5`;
     const doc = new DOMParser().parseFromString(await (await fetch(u)).text(), 'text/xml');
-    return Array.from(doc.getElementsByTagName(layer + '_feature')).map(f => {
-      const o = {}; Array.from(f.children).forEach(c => { if (c.localName !== 'boundedBy') o[c.localName] = c.textContent.trim(); }); return o;
-    });
+    return Array.from(doc.getElementsByTagName(layer + '_feature')).map(f => { const o = {}; Array.from(f.children).forEach(c => { if (c.localName !== 'boundedBy') o[c.localName] = c.textContent.trim(); }); return o; });
   };
   const [rb, rp, hz1, hz2, hz3, hz4] = await Promise.all([
     gfi('RBFORMAALOMRAADE').catch(() => []), gfi('RpArealFormaalOmraade_2').catch(() => []),
     gfi('RPANGITTHENSYNSONE_2').catch(() => []), gfi('RBRESTRIKSJONOMRAADE').catch(() => []),
     gfi('RBFAREOMRAADE').catch(() => []), gfi('RBBEVARINGOMRAADE').catch(() => [])
   ]);
-  const f = rp[0] || rb[0];
-  const hz = [...hz1, ...hz2, ...hz3, ...hz4];
+  const f = rp[0] || rb[0]; const hz = [...hz1, ...hz2, ...hz3, ...hz4];
   if (!f) return;
   const g = k => f[k] || '';
-  S.plan = { source: 'Oslo kommune', raw: { rb, rp, hz } };
-  S.plan.planid = g('PLANID');
-  S.plan.formaal = g('Z_REGFORM') || g('Z_ARFORM') || g('FELTNAVN') || g('REGFORM') || g('RPAREALFORMAAL');
-  S.plan.felt = g('FELTNAVN');
-  S.plan.utnytting = g('UTNTALL');
-  S.plan.utnyttingType = g('UTNTYP');
+  S.plan = { source: 'Oslo kommune', planid: g('PLANID'), formaal: g('Z_REGFORM') || g('Z_ARFORM') || g('FELTNAVN') || g('REGFORM'), felt: g('FELTNAVN'), utnytting: g('UTNTALL'), utnyttingType: g('UTNTYP'), hz };
   const un = parseFloat(String(S.plan.utnytting).replace(',', '.'));
   if (un && (/bya|prosent|%/i.test(S.plan.utnyttingType) || (!S.plan.utnyttingType && un < 100))) $('maxbya').value = un;
-  const bits = [];
-  if (S.plan.planid) bits.push(`Plan-ID <b>${S.plan.planid}</b>`);
-  if (S.plan.formaal) bits.push(`Formål: <b>${S.plan.formaal}</b>${S.plan.felt ? ' (felt ' + S.plan.felt + ')' : ''}`);
-  if (S.plan.utnytting) bits.push(`Utnytting i plankartet: <b>${S.plan.utnytting} ${S.plan.utnyttingType}</b>`);
-  if (hz.length) bits.push(`Hensynssoner: <b>${hz.map(h => h.Z_HENSYNSONENAVN || h.HENSYNSONENAVN || h.Z_RESTRIKSJON || h.Z_FARE || h.Z_BEVARING || h.OBJTYPE || 'ja').join(', ')}</b>`);
-  const links = S.plan.planid ? ` · <a href="https://od2.pbe.oslo.kommune.no/kart/?planid=${encodeURIComponent(S.plan.planid)}" target="_blank" rel="noopener">Planinnsyn</a> · <a href="https://innsyn.pbe.oslo.kommune.no/saksinnsyn/showregbest.asp?planid=${encodeURIComponent(S.plan.planid)}" target="_blank" rel="noopener">Bestemmelser (PDF)</a>` : '';
-  $('planinfo').innerHTML = (bits.length ? bits.join(' · ') : 'Fant plan, men uten detaljer.') + links + '<br><span class="muted">Mangler tallet for maks utnyttelse? Det står i bestemmelsene. I Oslos småhusområder er det som regel 24 %-BYA og 4 m til nabogrense.</span>';
-  if (!S.plan.utnytting && !$('maxbya').value && /bolig/i.test(S.plan.formaal)) $('maxbya').placeholder = 'ofte 24 i Oslo';
+  const kv = [];
+  if (S.plan.planid) kv.push(['Plan-ID', esc(S.plan.planid)]);
+  if (S.plan.formaal) kv.push(['Formål', esc(S.plan.formaal) + (S.plan.felt ? ' (felt ' + esc(S.plan.felt) + ')' : '')]);
+  if (S.plan.utnytting) kv.push(['Utnytting i plankart', esc(S.plan.utnytting + ' ' + S.plan.utnyttingType)]);
+  kv.push(['Hensynssoner', hz.length ? esc(hz.map(h => h.Z_HENSYNSONENAVN || h.HENSYNSONENAVN || h.Z_RESTRIKSJON || h.Z_FARE || h.Z_BEVARING || h.OBJTYPE || 'ja').join(', ')) : 'ingen i plankartet']);
+  const links = S.plan.planid ? `<div class="hint"><a href="https://od2.pbe.oslo.kommune.no/kart/?planid=${encodeURIComponent(S.plan.planid)}" target="_blank" rel="noopener">Åpne planen</a> · <a href="https://innsyn.pbe.oslo.kommune.no/saksinnsyn/showregbest.asp?planid=${encodeURIComponent(S.plan.planid)}" target="_blank" rel="noopener">Bestemmelser (PDF)</a></div>` : '';
+  $('planinfo').innerHTML = `<div class="kv">${kv.map(x => `<span>${x[0]}</span><span>${x[1]}</span>`).join('')}</div>${links}<div class="hint">Maks utnyttelse står i bestemmelsene. I Oslos småhusområder er det som regel 24 %-BYA og 4 m til nabogrense.</div>`;
+  if (!$('maxbya').value && /bolig/i.test(S.plan.formaal)) $('maxbya').placeholder = 'ofte 24 i Oslo';
 }
 
 // ---------- Eksisterende bygg fra OpenStreetMap ----------
-$('osmbtn').onclick = async () => {
+async function loadBuildings() {
   if (!S.teig) return;
-  $('osmbtn').disabled = true; $('osmhint').textContent = 'Henter bygninger …';
+  $('osmbtn').disabled = true; $('osmhint').innerHTML = '<span class="spin"></span>Henter eksisterende bygg …';
   try {
     const b = turf.bbox(turf.buffer(S.teig, 5, { units: 'meters' }));
     const q = `[out:json][timeout:25];(way["building"](${b[1]},${b[0]},${b[3]},${b[2]}););out geom;`;
@@ -356,8 +523,7 @@ $('osmbtn').onclick = async () => {
       catch (e) { lastErr = e; }
     }
     if (!j) throw lastErr || new Error('Overpass utilgjengelig');
-    S.buildings = [];
-    let sum = 0;
+    S.buildings = []; let sum = 0;
     (j.elements || []).forEach(w => {
       if (!w.geometry || w.geometry.length < 4) return;
       const ring = w.geometry.map(p => [p.lon, p.lat]);
@@ -367,49 +533,41 @@ $('osmbtn').onclick = async () => {
       if (inter) { const a = turf.area(inter); if (a > 1) { sum += a; S.buildings.push(poly); } }
     });
     $('exbya').value = Math.round(sum);
-    $('osmhint').innerHTML = S.buildings.length ? `Fant ${S.buildings.length} bygg på tomta, til sammen ${fmt(sum, 0)} m² BYA. Rett tallet hvis det er feil.` : 'Fant ingen bygninger i OpenStreetMap på tomta. Skriv inn BYA selv.';
-    drawBuildings(); render();
-  } catch (e) { console.error(e); $('osmhint').innerHTML = '<span class="err">Klarte ikke hente bygninger nå. Skriv inn BYA selv.</span>'; }
+    $('osmhint').innerHTML = S.buildings.length ? `Fant ${S.buildings.length} bygg på tomta, til sammen ${fmt(sum, 0)} m² BYA. Rett tallet hvis det er feil.` : 'Fant ingen bygninger i OpenStreetMap på tomta. Skriv inn BYA selv hvis det står noe der.';
+    drawBuildings();
+  } catch (e) { console.error(e); $('osmhint').innerHTML = '<span class="err">Fikk ikke hentet bygninger nå. Skriv inn BYA selv, eller prøv igjen.</span>'; }
   $('osmbtn').disabled = false;
-};
+}
+$('osmbtn').onclick = async () => { await loadBuildings(); render(); };
 function drawBuildings() {
   if (S.bLayer) map.removeLayer(S.bLayer);
-  S.bLayer = L.geoJSON(turf.featureCollection(S.buildings), { style: { color: '#7a5c3a', weight: 1, fillOpacity: .35 } }).addTo(map);
+  S.bLayer = L.geoJSON(turf.featureCollection(S.buildings), { style: { color: '#7a5c3a', weight: 1, fillOpacity: .35 }, interactive: false }).addTo(map);
 }
 
 // ---------- Plassering av tiltaket ----------
-map.on('click', e => {
-  if (!S.teig) return;
-  S.center = [e.latlng.lng, e.latlng.lat];
-  ensureMarker(); updateRect(); render();
-});
+map.on('click', e => { if (!S.teig) return; S.center = [e.latlng.lng, e.latlng.lat]; ensureMarker(); updateRect(); render(); });
 function ensureMarker() {
   if (S.marker) { S.marker.setLatLng([S.center[1], S.center[0]]); return; }
-  S.marker = L.marker([S.center[1], S.center[0]], { draggable: true, opacity: .0 }).addTo(map);
+  S.marker = L.marker([S.center[1], S.center[0]], { draggable: true, opacity: 0, keyboard: false }).addTo(map);
   S.marker.on('drag', e => { const ll = e.target.getLatLng(); S.center = [ll.lng, ll.lat]; updateRect(); });
   S.marker.on('dragend', render);
 }
 function updateRect() {
   if (!S.center) return;
   const L_ = num('len'), W = num('wid'), rot = num('rot');
-  const c = turf.point(S.center);
-  const half = Math.hypot(L_ / 2, W / 2) / 1000; // km
-  const a = Math.atan2(W / 2, L_ / 2) * 180 / Math.PI;
-  const bearings = [rot + a, rot + 180 - a, rot + 180 + a, rot - a];
-  const pts = bearings.map(b => turf.destination(c, half, b).geometry.coordinates);
-  pts.push(pts[0]);
-  S.rect = turf.polygon([pts]);
+  const c = turf.point(S.center), half = Math.hypot(L_ / 2, W / 2) / 1000, a = Math.atan2(W / 2, L_ / 2) * 180 / Math.PI;
+  const pts = [rot + a, rot + 180 - a, rot + 180 + a, rot - a].map(b => turf.destination(c, half, b).geometry.coordinates);
+  pts.push(pts[0]); S.rect = turf.polygon([pts]);
   if (S.rectLayer) map.removeLayer(S.rectLayer);
-  S.rectLayer = L.geoJSON(S.rect, { style: { color: '#e0a100', weight: 2, fillColor: '#ffd54f', fillOpacity: .5 }, interactive: false }).addTo(map);
+  S.rectLayer = L.geoJSON(S.rect, { style: { color: '#e0a100', weight: 2, fillColor: '#ffd54f', fillOpacity: .55 }, interactive: false }).addTo(map);
   if (S.marker) S.marker.setLatLng([S.center[1], S.center[0]]);
 }
-['len', 'wid', 'rot'].forEach(id => $(id).addEventListener('input', () => { updateRect(); render(); }));
-['type', 'mone', 'gesims', 'thoyde', 'utstikk', 'bebo', 'kjeller', 'exbya', 'park', 'maxbya', 'mindist'].forEach(id => $(id).addEventListener('input', render));
-$('type').addEventListener('change', () => {
-  const t = $('type').value;
-  $('hrow').classList.toggle('hidden', t === 'terrasse');
-  $('trow').classList.toggle('hidden', t !== 'terrasse');
-  $('garasjeopts').classList.toggle('hidden', t !== 'garasje');
+['len', 'wid', 'rot'].forEach(id => $(id).addEventListener('input', () => { $('rotv').textContent = $('rot').value + '°'; updateRect(); render(); }));
+['mone', 'gesims', 'thoyde', 'utstikk', 'bebo', 'kjeller', 'exbya', 'park', 'maxbya', 'mindist'].forEach(id => $(id).addEventListener('input', render));
+document.querySelectorAll('#typeseg button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('#typeseg button').forEach(x => x.classList.remove('on')); b.classList.add('on');
+  const t = b.dataset.t; $('type').value = t;
+  $('hrow').classList.toggle('hidden', t === 'terrasse'); $('trow').classList.toggle('hidden', t !== 'terrasse'); $('garasjeopts').classList.toggle('hidden', t !== 'garasje');
   if (t === 'tilbygg') { $('len').value = 5; $('wid').value = 3; $('mindist').value = 4; }
   if (t === 'garasje') { $('len').value = 6; $('wid').value = 4; }
   if (t === 'terrasse') { $('len').value = 5; $('wid').value = 3; }
@@ -418,56 +576,41 @@ $('type').addEventListener('change', () => {
 
 // ---------- Geometri ----------
 function minDistToBoundary(poly, target) {
-  // minste avstand fra kantene på poly til linjene i target (polygon eller multipolygon)
   const lines = turf.flatten(turf.polygonToLine(target)).features;
-  const samples = [];
-  const ring = poly.geometry.coordinates[0];
+  const samples = [], ring = poly.geometry.coordinates[0];
   for (let i = 0; i < ring.length - 1; i++) {
-    const seg = turf.lineString([ring[i], ring[i + 1]]);
-    const len = turf.length(seg, { units: 'meters' });
-    const n = Math.max(1, Math.ceil(len / 0.2));
+    const seg = turf.lineString([ring[i], ring[i + 1]]), len = turf.length(seg, { units: 'meters' }), n = Math.max(1, Math.ceil(len / 0.2));
     for (let k = 0; k <= n; k++) samples.push(turf.along(seg, len * k / n, { units: 'meters' }));
   }
   let best = Infinity;
   for (const s of samples) for (const l of lines) {
     const ls = l.geometry.type === 'LineString' ? l : turf.lineString(l.geometry.coordinates[0]);
-    const d = turf.pointToLineDistance(s, ls, { units: 'meters' });
-    if (d < best) best = d;
+    const d = turf.pointToLineDistance(s, ls, { units: 'meters' }); if (d < best) best = d;
   }
-  // og motsatt vei: hjørner på target mot kantene i poly
   const pl = turf.polygonToLine(poly);
   turf.coordEach(target, c => { const d = turf.pointToLineDistance(turf.point(c), pl, { units: 'meters' }); if (d < best) best = d; });
   return best;
 }
 function insideTeig(rect) {
-  try {
-    const polys = S.teig.geometry.type === 'Polygon' ? [S.teig] : S.teig.geometry.coordinates.map(c => turf.polygon(c));
-    return polys.some(p => turf.booleanContains(p, rect));
-  } catch (e) { return false; }
+  try { const polys = S.teig.geometry.type === 'Polygon' ? [S.teig] : S.teig.geometry.coordinates.map(c => turf.polygon(c)); return polys.some(p => turf.booleanContains(p, rect)); }
+  catch (e) { return false; }
 }
 
 // ---------- Regelmotor ----------
 function evaluate() {
-  const t = $('type').value;
-  const L_ = num('len'), W = num('wid'), bya = L_ * W;
+  const t = $('type').value, L_ = num('len'), W = num('wid'), bya = L_ * W;
   const mone = num('mone'), gesims = num('gesims'), th = num('thoyde'), ut = num('utstikk');
   const bebo = $('bebo').checked, kjeller = $('kjeller').checked;
   const exbya = num('exbya'), park = num('park') * 18;
-  const maxbya = $('maxbya').value === '' ? null : num('maxbya');
-  const mindist = num('mindist');
-  const area = S.teigArea;
+  const maxbya = $('maxbya').value === '' ? null : num('maxbya'), mindist = num('mindist'), area = S.teigArea;
   const inside = S.rect ? insideTeig(S.rect) : null;
   const dist = S.rect ? minDistToBoundary(S.rect, S.teig) : null;
   const distB = S.rect && S.buildings.length ? Math.min(...S.buildings.map(b => minDistToBoundary(S.rect, b))) : null;
   const countsBya = t !== 'terrasse' || th > 0.5;
-  const newBya = exbya + park + (countsBya ? bya : 0);
-  const pct = area ? newBya / area * 100 : null;
-
+  const newBya = exbya + park + (countsBya ? bya : 0), pct = area ? newBya / area * 100 : null;
   const checks = [], flags = [];
   const C = (ok, text, sub, level) => checks.push({ ok, text, sub, level: level || (ok ? 'ok' : 'bad') });
   let exempt = true;
-
-  // Unntak fra søknadsplikt, SAK10 § 4-1
   if (t === 'garasje') {
     C(bya <= 50, `Størrelse ${fmt(bya)} m² BYA`, 'Grense for å slippe å søke: 50 m² (BYA og BRA). SAK10 § 4-1 a'); exempt &&= bya <= 50;
     C(mone <= 4.0, `Mønehøyde ${fmt(mone)} m`, 'Maks 4,0 m uten søknad'); exempt &&= mone <= 4.0;
@@ -485,20 +628,14 @@ function evaluate() {
     if (dist !== null) { C(dist >= 1.0, `${fmt(dist, 2)} m til nærmeste tomtegrense`, 'Minst 1,0 m fra nabogrense uten søknad'); exempt &&= dist >= 1.0; }
   }
   if (inside === false) { C(false, 'Bygget stikker utenfor tomta', 'Flytt det innenfor den grønne grensa'); exempt = false; flags.push('utenfor'); }
-
-  // Utnyttelsesgrad
   if (pct !== null) {
-    if (maxbya === null) C(true, `Utnyttelse blir ${fmt(pct)} %-BYA`, 'Skriv inn maks fra planen for å sjekke taket', 'warn');
+    if (maxbya === null) C(true, `Utnyttelse blir ${fmt(pct)} %-BYA`, 'Skriv inn maks fra planen i steg 3 for å sjekke taket', 'warn');
     else { C(pct <= maxbya, `Utnyttelse blir ${fmt(pct)} %-BYA, planen tillater ${fmt(maxbya)} %`, `${fmt(newBya, 0)} m² av ${fmt(area, 0)} m² tomt`); if (pct > maxbya) { exempt = false; flags.push('bya'); } }
   }
-  // Avstand mot pbl § 29-4 for søknadspliktige tiltak
-  if (dist !== null && t !== 'terrasse' && dist < mindist) {
-    if (t === 'garasje' && bya <= 50 && dist >= 1.0) flags.push('naer-garasje'); else flags.push('naer');
-  }
-
-  // Kan du søke selv? SAK10 § 3-1
-  let selv = t === 'garasje' ? (bya <= 70 && !bebo) : t === 'tilbygg' ? bya <= 50 : true;
-
+  const hz = HAZARDS.filter(h => S.hazards[h.key]);
+  if (hz.length) { C(true, `Innenfor aktsomhetsområde: ${hz.map(h => h.name.toLowerCase()).join(', ')}`, 'Kommunen vil kreve en vurdering av sikkerhet mot naturfare (TEK17 kap. 7). Gjelder også tiltak uten søknad.', 'warn'); flags.push('fare'); }
+  if (dist !== null && t !== 'terrasse' && dist < mindist) { if (t === 'garasje' && bya <= 50 && dist >= 1.0) flags.push('naer-garasje'); else flags.push('naer'); }
+  const selv = t === 'garasje' ? (bya <= 70 && !bebo) : t === 'tilbygg' ? bya <= 50 : true;
   let level, head, body;
   if (S.rect === null) { level = 'neutral'; head = 'Plasser bygget på tomta'; body = 'Klikk i kartet der du vil ha det.'; }
   else if (flags.includes('utenfor')) { level = 'bad'; head = 'Bygget er utenfor tomta'; body = 'Flytt det innenfor grensa før vi kan si noe mer.'; }
@@ -506,20 +643,25 @@ function evaluate() {
   else if (flags.includes('bya') || flags.includes('naer')) { level = 'bad'; head = 'Søknadspliktig, og du trenger trolig dispensasjon'; body = (flags.includes('bya') ? 'Du går over maks utnyttelse i planen. ' : '') + (flags.includes('naer') ? `Du er nærmere tomtegrensa enn ${fmt(mindist)} m. Skriftlig samtykke fra naboen kan løse avstanden. ` : ''); }
   else if (flags.includes('naer-garasje')) { level = 'warn'; head = 'Søknadspliktig, kommunen kan godkjenne avstanden'; body = 'Frittliggende bygg under 50 m² kan kommunen tillate nærmere enn 4 m fra nabogrense uten dispensasjon (pbl § 29-4 tredje ledd). Nabosamtykke gjør saken enklere.'; }
   else { level = 'warn'; head = selv ? 'Søknadspliktig, men du kan søke selv' : 'Søknadspliktig, krever ansvarlig søker'; body = selv ? 'Du kan sende søknaden uten fagfolk (SAK10 § 3-1). Nabovarsel må sendes først.' : 'Tiltaket er for stort til å søke selv. Du trenger et foretak som ansvarlig søker.'; }
-
-  return { level, head, body, checks, bya, pct, dist, distB, newBya, selv, exempt, flags };
+  return { level, head, body, checks, bya, pct, dist, distB, newBya, exbya, park, area, selv, exempt, flags, t };
 }
 
 function render() {
   if (!S.teig) return;
   const r = evaluate();
-  const html = [`<div class="verdict ${r.level}"><h3>${r.head}</h3><p>${r.body}</p></div>`];
+  const html = [`<div class="verdict ${r.level}"><div class="lbl">${esc($('q').value)}</div><h3>${r.head}</h3><p>${r.body}</p></div>`];
   html.push(r.checks.map(c => `<div class="check ${c.level}"><span class="ic">${c.level === 'ok' ? '✓' : c.level === 'warn' ? '!' : '✕'}</span><div>${c.text}<small>${c.sub}</small></div></div>`).join(''));
+  if (S.rect) {
+    html.push(`<h4>Tall</h4><div class="kv"><span>Tomteareal</span><span>${fmt(r.area, 0)} m²</span><span>Nytt bygg</span><span>${fmt(r.bya)} m² BYA</span><span>Eksisterende BYA</span><span>${fmt(r.exbya, 0)} m²${r.park ? ' + ' + fmt(r.park, 0) + ' m² parkering' : ''}</span><span>Utnyttelse etter tiltak</span><span>${r.pct !== null ? fmt(r.pct) + ' %-BYA' : '–'}</span><span>Avstand til tomtegrense</span><span>${r.dist !== null ? fmt(r.dist, 2) + ' m' : '–'}</span></div>`);
+    const next = [];
+    if (r.exempt) next.push('Sjekk bestemmelsene for byggegrense, takform og høyde.', 'Bygg, og meld fra til kommunen med situasjonskart innen fire uker.');
+    else { next.push('Send nabovarsel til alle berørte naboer, med tegninger og situasjonskart. Naboene har to ukers frist.'); if (r.flags.includes('bya') || r.flags.includes('naer')) next.push('Skriv en dispensasjonssøknad med begrunnelse etter pbl § 19-2.'); next.push(r.selv ? 'Send søknaden selv via kommunens skjema eller Fellestjenester BYGG.' : 'Engasjer et foretak som ansvarlig søker.'); }
+    if (r.flags.includes('fare')) next.push('Be om en vurdering av naturfare før du bygger, kommunen vil kreve det.');
+    html.push(`<h4>Neste steg</h4><ol class="next">${next.map(n => `<li>${n}</li>`).join('')}</ol>`);
+  }
   html.push(`<p class="hint">Grenser fra Kartverket kan avvike fra faktisk grense. Kommunen kan ha egne krav til avstand fra vei, byggegrense i plankartet og takform. Sjekk bestemmelsene før du bygger.</p>`);
   $('result').innerHTML = html.join('');
-  // CTA
-  const pkg = r.level === 'ok' ? 'Vil du ha melding til kommunen og situasjonskart klart?' : 'Vil du ha alt klart til å sende?';
-  $('cta').querySelector('h3').textContent = pkg;
+  $('ctah').textContent = r.level === 'ok' ? 'Vil du ha melding til kommunen og situasjonskart klart?' : 'Vil du ha alt klart til å sende?';
   $('price').textContent = r.flags.includes('bya') || r.flags.includes('naer') ? '499 kr' : '349 kr';
   setupBuy(r);
 }
@@ -530,11 +672,19 @@ function setupBuy(r) {
     const subject = encodeURIComponent('Bestilling: byggesakspakke');
     const body = encodeURIComponent(`Adresse: ${$('q').value}\nTiltak: ${$('type').value} ${$('len').value} x ${$('wid').value} m\nResultat: ${r ? r.head : ''}\n\nJeg vil ha pakken. Send meg betalingslenke.`);
     b.href = `mailto:${CONTACT}?subject=${subject}&body=${body}`;
-    b.textContent = 'Bestill pakken';
     $('ctahint').textContent = 'Du får betalingslenke på e-post og pakken innen 24 timer.';
   }
 }
+$('proffbtn').href = `mailto:${CONTACT}?subject=${encodeURIComponent('Proff: mangelsjekk av byggesøknader')}&body=${encodeURIComponent('Hei, jeg vil prøve mangelsjekk på neste søknad.\nFirma:\nAntall søknader i året:')}`;
 setupBuy(null);
+
+// ---------- Delt lenke ----------
+(async () => {
+  const adr = new URLSearchParams(location.search).get('adr');
+  if (!adr) return;
+  $('q').value = adr;
+  try { const j = await (await fetch(`${API.adr}?sok=${encodeURIComponent(adr)}&treffPerSide=1`)).json(); if (j.adresser && j.adresser[0]) selectAddress(j.adresser[0]); } catch (e) { }
+})();
 </script>
 </body>
 </html>
