@@ -100,9 +100,26 @@ function kildeAv(sett, r) { return { dok: sett.dok, para: r.para, sitat: r.sitat
      tomtAreal, eksBya, eksBra, boenheter, pIBygg, pUte,
      kommunenr, sone, maksBya (manuell %-BYA), minAvstand (manuell), farer: []
    } */
+/* Plan- og bygningsloven gjelder ikke på Svalbard og Jan Mayen. */
+const UTENFOR_PBL = { "2100": "Svalbard", "2211": "Jan Mayen" };
+
 function vurder(inn) {
   const funn = [];
   const F = (regel, utfall, forklaring, kilde, beregning) => funn.push({ regel, utfall, forklaring, kilde, beregning });
+
+  if (UTENFOR_PBL[inn.kommunenr]) {
+    const sted = UTENFOR_PBL[inn.kommunenr];
+    F("Plan- og bygningsloven gjelder ikke her", "brudd",
+      `${sted} er ikke omfattet av plan- og bygningsloven. Byggesaker følger svalbardmiljøloven og arealplanen for planområdet, og behandles av Sysselmesteren eller Longyearbyen lokalstyre. Denne sjekken gjelder ikke for deg.`,
+      { dok: "Plan- og bygningsloven", para: "§ 1-2", sitat: "Loven gjelder for hele landet, herunder vassdrag. For sjøområder gjelder loven ut til én nautisk mil utenfor grunnlinjene. Kongen kan bestemme at loven helt eller delvis skal gjelde for Svalbard.", url: URL_PBL });
+    return {
+      status: "utenfor", grunnstatus: "utenfor", funn,
+      dokumentkrav: [`Ta kontakt med ${inn.kommunenr === "2100" ? "Longyearbyen lokalstyre eller Sysselmesteren på Svalbard" : "Sysselmesteren"} for å finne ut hva som kreves.`],
+      nesteSteg: ["Ikke bruk denne rapporten som grunnlag. Regelverket her er et annet."],
+      plan: null,
+      forbehold: ["Denne tjenesten dekker bare fastlands-Norge, der plan- og bygningsloven gjelder."]
+    };
+  }
   const sett = PLANSETT[inn.kommunenr];
   const sone = inn.sone || null;
   const bygningstiltak = ["garasje", "tilbygg"].includes(inn.type);
@@ -311,6 +328,7 @@ function vurder(inn) {
 }
 
 const STATUSTEKST = {
+  utenfor: { tittel: "Denne tjenesten gjelder ikke her", niva: "bad", under: "Plan- og bygningsloven gjelder ikke på Svalbard og Jan Mayen. Der er det andre regler og en annen myndighet." },
   unntatt: { tittel: "Ser ut til at du kan bygge uten å søke", niva: "ok", under: "Tiltaket oppfyller vilkårene i byggesaksforskriften § 4-1, forutsatt at planen for tomta ikke sier noe annet." },
   selv: { tittel: "Søknadspliktig, men du kan søke selv", niva: "warn", under: "Du kan sende søknaden uten ansvarlig søker etter byggesaksforskriften § 3-1. Nabovarsel må sendes først." },
   ansvarlig: { tittel: "Søknadspliktig, krever ansvarlig søker", niva: "warn", under: "Tiltaket er for stort til å søke selv. Du trenger et foretak som ansvarlig søker etter plan- og bygningsloven § 20-3." },
