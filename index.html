@@ -155,7 +155,7 @@ footer b{color:var(--ink)}
 <body>
 <nav><div class="in">
   <a class="logo" href="#"><i></i>Kan jeg bygge?</a>
-  <div class="links"><a href="#slik">Slik virker det</a><a href="#priser">Priser</a><a href="#proff">For proffer</a><a href="#faq">Spørsmål</a></div>
+  <div class="links"><a href="#slik">Slik virker det</a><a href="#priser">Priser</a><a href="proff.html">Mangelsjekk</a><a href="#faq">Spørsmål</a></div>
 </div></nav>
 
 <section class="hero wrap">
@@ -306,7 +306,7 @@ footer b{color:var(--ink)}
   <div class="cols">
     <div class="card price-card"><h3>Sjekk</h3><div class="p">0 kr</div><ul><li>Tomtegrenser og planoppslag</li><li>Avstand, utnyttelse og regler</li><li>Farekart fra NVE</li><li>Rapport med sitat, klar til utskrift</li></ul><a class="btn sec" href="#app">Start sjekken</a></div>
     <div class="card price-card hl"><h3>Pakke</h3><div class="p">349 kr <small>/ 499 kr med dispensasjon</small></div><ul><li>Situasjonskart med mål</li><li>Nabovarsel til alle naboer</li><li>Dispensasjonssøknad ved behov</li><li>Sjekkliste før innsending</li></ul><a class="btn" href="#cta">Bestill etter sjekken</a></div>
-    <div class="card price-card" id="proff"><h3>Proff</h3><div class="p">990 kr <small>/ mnd</small></div><ul><li>Mangelsjekk av søknader før innsending</li><li>Ubegrenset antall saker</li><li>For byggmestere, arkitekter og ansvarlige søkere</li></ul><a class="btn sec" id="proffbtn" href="#">Ta kontakt</a></div>
+    <div class="card price-card" id="proff"><h3>Proff</h3><div class="p">990 kr <small>/ mnd</small></div><ul><li>Sjekkliste mot § 5-4, gratis å bruke</li><li>Vi går gjennom søknadene dine før innsending</li><li>Ubegrenset antall saker, ingen binding</li></ul><a class="btn sec" href="proff.html">Åpne mangelsjekken</a></div>
   </div>
 </section>
 
@@ -800,7 +800,6 @@ function setupBuy(tittel) {
   }
 }
 $('printbtn').onclick = () => window.print();
-$('proffbtn').href = `mailto:${CONTACT}?subject=${encodeURIComponent('Proff: mangelsjekk av byggesøknader')}&body=${encodeURIComponent('Hei, jeg vil prøve mangelsjekk på neste søknad.\nFirma:\nAntall søknader i året:')}`;
 setupBuy(null);
 
 (async () => {

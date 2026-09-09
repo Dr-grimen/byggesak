@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mangelsjekk før innsending – for ansvarlige søkere</title>
+<meta name="description" content="Gå gjennom byggesøknaden mot byggesaksforskriften § 5-4 før du sender den. Hvert punkt viser paragrafen kommunen kontrollerer mot.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f6f3;--card:#fff;--ink:#141a16;--muted:#5c675f;--line:#e2e7e1;--brand:#155d33;--brand-2:#1f7a44;--tint:#e6f2ea;--ok:#177a3e;--warn:#b26a0b;--bad:#b3261e;--r:14px;--sh:0 1px 2px rgba(20,26,22,.04),0 8px 24px rgba(20,26,22,.06)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:var(--brand)}
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+nav .in{max-width:1080px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:18px}
+nav .logo{font-weight:800;font-size:19px;color:var(--brand);letter-spacing:-.4px;text-decoration:none;display:flex;align-items:center;gap:8px}
+nav .logo i{width:26px;height:26px;border-radius:7px;background:var(--brand);display:inline-block;position:relative}
+nav .logo i:after{content:"";position:absolute;left:7px;top:7px;width:12px;height:12px;border:2.5px solid #fff;border-radius:2px}
+nav .links{margin-left:auto;display:flex;gap:18px;font-size:14px}
+nav .links a{color:var(--muted);text-decoration:none;font-weight:500}
+nav .links a:hover{color:var(--ink)}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+.hero{padding:44px 0 20px}
+.hero .eyebrow{display:inline-block;background:var(--tint);color:var(--brand);font-weight:600;font-size:13px;padding:5px 12px;border-radius:99px;margin-bottom:14px}
+.hero h1{font-size:clamp(28px,4.4vw,44px);line-height:1.1;letter-spacing:-1px;margin:0 0 12px;max-width:760px;font-weight:800}
+.hero p{margin:0;max-width:640px;color:var(--muted);font-size:17px}
+.grid{display:grid;grid-template-columns:1fr;gap:18px;margin-top:24px}
+@media(min-width:940px){.grid{grid-template-columns:1fr 380px;align-items:start}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:var(--sh)}
+.card+.card{margin-top:14px}
+.card h2{font-size:13px;margin:0 0 12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;flex-wrap:wrap}
+.seg button{flex:1 1 46%;border:0;background:#fff;padding:11px 8px;font:inherit;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;border-right:1px solid var(--line);border-bottom:1px solid var(--line);text-align:left}
+.seg button span{display:block;font-weight:400;font-size:11px;opacity:.8}
+.seg button.on{background:var(--brand);color:#fff}
+.tools{display:flex;gap:8px;margin:14px 0;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--brand);color:#fff;border:0;border-radius:10px;padding:11px 16px;font:inherit;font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;white-space:nowrap}
+.btn:hover{background:var(--brand-2)}
+.btn.sec{background:#fff;color:var(--brand);border:1px solid var(--line)}
+.btn.sec:hover{background:var(--tint)}
+.item{border-bottom:1px solid var(--line);padding:13px 0;display:flex;gap:12px;align-items:flex-start}
+.item:last-child{border-bottom:0}
+.item .tri{display:flex;flex:0 0 auto;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.item .tri button{border:0;background:#fff;padding:6px 9px;font:inherit;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;border-right:1px solid var(--line)}
+.item .tri button:last-child{border-right:0}
+.item .tri button.on[data-v=ja]{background:var(--ok);color:#fff}
+.item .tri button.on[data-v=nei]{background:var(--bad);color:#fff}
+.item .tri button.on[data-v=na]{background:#8b968e;color:#fff}
+.item .body{flex:1;min-width:0}
+.item .tit{font-weight:600;font-size:15px}
+.item .hj{color:var(--muted);font-size:13.5px;margin-top:2px}
+.item .vanlig{font-size:13px;background:#fff8e6;border-left:3px solid var(--warn);padding:6px 10px;border-radius:0 7px 7px 0;margin-top:6px;color:#6b4a08}
+.item .kilde{font-size:12px;margin-top:6px}
+.item .kilde a{color:var(--muted)}
+.item details summary{font-size:12px;color:var(--muted);cursor:pointer;margin-top:4px}
+.item blockquote{margin:6px 0 0;padding:8px 12px;border-left:3px solid var(--line);background:var(--bg);border-radius:0 8px 8px 0;font-size:13px}
+.tag{display:inline-block;font-size:11px;font-weight:700;border-radius:5px;padding:1px 6px;margin-left:6px;vertical-align:1px}
+.tag.stopp{background:#fdeceb;color:var(--bad)}
+.tag.mangel{background:#fdf3e3;color:var(--warn)}
+.tag.sjekk{background:var(--tint);color:var(--brand)}
+.side{position:sticky;top:70px}
+.verdict{border-radius:var(--r);padding:18px;color:#fff;margin-bottom:12px}
+.verdict.ok{background:linear-gradient(135deg,#155d33,#1f7a44)}
+.verdict.warn{background:linear-gradient(135deg,#9a5a05,#b26a0b)}
+.verdict.bad{background:linear-gradient(135deg,#8f1d17,#b3261e)}
+.verdict.neutral{background:linear-gradient(135deg,#2b3a31,#3a4a40)}
+.verdict h3{margin:0 0 6px;font-size:20px;letter-spacing:-.3px}
+.verdict p{margin:0;font-size:14px;opacity:.95}
+.bar{height:8px;border-radius:99px;background:var(--line);overflow:hidden;margin:12px 0 6px}
+.bar i{display:block;height:100%;background:var(--brand);transition:width .3s}
+.mini{font-size:13px;color:var(--muted)}
+.liste{margin:10px 0 0;padding-left:18px;font-size:14px}
+.liste li{margin:5px 0}
+.muted{color:var(--muted);font-size:13px}
+.forbehold{font-size:12.5px;color:var(--muted);margin-top:14px}
+.forbehold li{margin:5px 0}
+footer{border-top:1px solid var(--line);margin-top:48px;padding:26px 0 44px;color:var(--muted);font-size:13px}
+.hidden{display:none!important}
+@media print{
+  nav,.tools,.side .cta,.noprint{display:none!important}
+  body{background:#fff}
+  .grid{display:block}
+  .card{box-shadow:none;border:0;padding:0}
+  .item{page-break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<nav><div class="in">
+  <a class="logo" href="index.html"><i></i>Kan jeg bygge?</a>
+  <div class="links"><a href="index.html">Plansjekk på tomt</a><a href="#hvorfor">Hvorfor</a></div>
+</div></nav>
+
+<section class="hero wrap">
+  <span class="eyebrow">For ansvarlige søkere, byggmestere og arkitekter</span>
+  <h1>Gå gjennom søknaden før kommunen gjør det.</h1>
+  <p>Samme liste som saksbehandleren kontrollerer mot, punkt for punkt fra byggesaksforskriften § 5-4. Ta det på to minutter og se hva som utløser mangelbrev.</p>
+</section>
+
+<div class="wrap grid">
+  <div>
+    <div class="card">
+      <h2>Hvilken søknad er dette?</h2>
+      <div class="seg" id="typeseg"></div>
+      <div class="tools">
+        <button class="btn sec" id="allja" type="button">Kryss av alt</button>
+        <button class="btn sec" id="nullstill" type="button">Nullstill</button>
+        <button class="btn sec" id="print" type="button">Skriv ut</button>
+      </div>
+    </div>
+    <div class="card">
+      <h2 id="listehode">Sjekkliste</h2>
+      <div id="liste"></div>
+      <ul class="forbehold" id="forbehold"></ul>
+    </div>
+  </div>
+
+  <div>
+    <div class="side">
+      <div id="dom"></div>
+      <div class="card">
+        <h2>Framdrift</h2>
+        <div class="bar"><i id="bar" style="width:0%"></i></div>
+        <div class="mini" id="teller">Ingen punkter besvart.</div>
+        <div id="oppsummering"></div>
+      </div>
+      <div class="card cta noprint" style="background:var(--ink);color:#fff;border:0">
+        <h2 style="color:#c7d0ca">Slipp å gjøre dette selv</h2>
+        <p style="margin:0 0 10px;font-size:14px">Vi går gjennom søknadene dine før innsending og sier hva kommunen kommer til å etterspørre. Fast månedspris, ubegrenset antall saker.</p>
+        <div style="font-size:26px;font-weight:800;letter-spacing:-.5px">990 kr <span style="font-size:14px;font-weight:500;opacity:.75">/ mnd</span></div>
+        <a class="btn" id="kontakt" style="background:#fff;color:var(--ink);margin-top:10px" href="#">Prøv på neste søknad</a>
+        <p class="mini" style="color:#9fb0a5;margin:8px 0 0">Første sak er gratis. Ingen binding.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="wrap" id="hvorfor" style="padding:44px 0 0">
+  <div class="card">
+    <h2>Hvorfor dette betyr noe nå</h2>
+    <p style="margin:0 0 10px;font-size:15px">Over 26 000 byggesøknader hadde mangler i 2024, rundt en tredel av alle som ble sendt. Hver mangel betyr et brev fra kommunen, en runde til med dokumenter, og at saksbehandlingsfristen ikke begynner å løpe.</p>
+    <p style="margin:0;font-size:15px">Regjeringen har foreslått at kommunen skal kunne avvise søknader som ikke rettes innen en frist, og at fristen skal løpe fra kommunen mottar søknaden. Prisen for en ufullstendig søknad går opp.</p>
+    <p class="muted" style="margin:12px 0 0"><a href="https://www.regjeringen.no/no/aktuelt/raskere-behandling-og-tydeliggjoring-av-dokumentasjonskrav-i-byggesoknader/id3099225/" target="_blank" rel="noopener">Regjeringen om raskere behandling og dokumentasjonskrav</a></p>
+  </div>
+</section>
+
+<footer><div class="wrap">
+  <b style="color:var(--ink)">Kan jeg bygge?</b> · Sjekkliste bygget på byggesaksforskriften § 5-4 og § 5-5, og plan- og bygningsloven § 21-3.
+  Dette er ikke juridisk rådgivning, og ikke en gjennomlesning av dokumentene dine. Kommunen avgjør.
+  <a href="mailto:sgrimen06@gmail.com">Kontakt</a>
+</div></footer>
+
+<script src="sjekkliste.js"></script>
+<script>
+const CONTACT = "sgrimen06@gmail.com";
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+let TYPE = "ettrinn";
+let SVAR = {};
+
+const ALVORTEKST = { stopp: "Stopper saken", mangel: "Gir mangelbrev", sjekk: "Vurder om det gjelder" };
+
+function tegnTyper() {
+  $('typeseg').innerHTML = SOKNADSTYPER.map(t =>
+    `<button type="button" data-t="${t.id}"${t.id === TYPE ? ' class="on"' : ''}>${esc(t.navn)}<span>${esc(t.under)}</span></button>`).join('');
+  document.querySelectorAll('#typeseg button').forEach(b => b.onclick = () => {
+    TYPE = b.dataset.t; SVAR = {}; tegnTyper(); tegnListe(); oppdater();
+  });
+}
+
+function tegnListe() {
+  const rel = relevantePunkter(TYPE);
+  $('listehode').textContent = `Sjekkliste – ${rel.length} punkter`;
+  $('liste').innerHTML = rel.map(p => `
+    <div class="item" data-id="${p.id}">
+      <div class="tri">
+        <button type="button" data-v="ja">Ja</button>
+        <button type="button" data-v="nei">Nei</button>
+        <button type="button" data-v="na">Ikke aktuelt</button>
+      </div>
+      <div class="body">
+        <div class="tit">${esc(p.tittel)}<span class="tag ${p.alvor}">${ALVORTEKST[p.alvor]}</span></div>
+        <div class="hj">${esc(p.hjelp)}</div>
+        ${p.vanlig ? `<div class="vanlig">${esc(p.vanlig)}</div>` : ''}
+        <div class="kilde"><a href="${p.url}" target="_blank" rel="noopener">${esc(p.dok)} ${esc(p.para)}</a></div>
+        <details><summary>Vis sitatet</summary><blockquote>«${esc(p.sitat)}»</blockquote></details>
+      </div>
+    </div>`).join('');
+  document.querySelectorAll('.item').forEach(it => {
+    it.querySelectorAll('.tri button').forEach(b => b.onclick = () => {
+      const id = it.dataset.id, v = b.dataset.v;
+      SVAR[id] = v === 'ja' ? true : v === 'na' ? 'na' : false;
+      it.querySelectorAll('.tri button').forEach(x => x.classList.remove('on'));
+      b.classList.add('on');
+      oppdater();
+    });
+  });
+  $('forbehold').innerHTML = SJEKK_FORBEHOLD.map(f => `<li>${esc(f)}</li>`).join('');
+}
+
+function oppdater() {
+  const rel = relevantePunkter(TYPE);
+  const besvart = rel.filter(p => SVAR[p.id] !== undefined).length;
+  $('bar').style.width = Math.round(besvart / rel.length * 100) + '%';
+  $('teller').textContent = `${besvart} av ${rel.length} punkter besvart.`;
+
+  if (!besvart) {
+    $('dom').innerHTML = `<div class="verdict neutral"><h3>Gå gjennom listen</h3><p>Svar ja, nei eller ikke aktuelt på hvert punkt. Vurderingen kommer her etter hvert.</p></div>`;
+    $('oppsummering').innerHTML = '';
+    return;
+  }
+  const r = sjekk(TYPE, SVAR);
+  $('dom').innerHTML = `<div class="verdict ${r.dom.niva}"><h3>${esc(r.dom.tittel)}</h3><p>${esc(r.dom.under)}${r.ubesvart.length ? ` ${r.ubesvart.length} punkter er ikke besvart ennå.` : ''}</p></div>`;
+
+  const seksjon = (tittel, liste) => liste.length
+    ? `<div style="margin-top:12px"><b style="font-size:14px">${tittel}</b><ul class="liste">${liste.map(p => `<li>${esc(p.tittel)} <span class="muted">(${esc(p.para)})</span></li>`).join('')}</ul></div>` : '';
+  $('oppsummering').innerHTML =
+    seksjon('Må rettes før innsending', r.stopp) +
+    seksjon('Bør tas med', r.smaa) +
+    seksjon('Vurder om det gjelder', r.sjekkpkt) +
+    (r.ok.length ? `<div style="margin-top:12px"><b style="font-size:14px">I orden</b> <span class="muted">${r.ok.length} punkter</span></div>` : '') +
+    (r.na.length ? `<div class="mini" style="margin-top:6px">${r.na.length} punkter merket ikke aktuelt.</div>` : '') +
+    (r.ubesvart.length ? `<div class="mini" style="margin-top:6px">${r.ubesvart.length} punkter gjenstår.</div>` : '');
+}
+
+$('allja').onclick = () => {
+  relevantePunkter(TYPE).forEach(p => SVAR[p.id] = true);
+  document.querySelectorAll('.item').forEach(it => {
+    it.querySelectorAll('.tri button').forEach(x => x.classList.toggle('on', x.dataset.v === 'ja'));
+  });
+  oppdater();
+};
+$('nullstill').onclick = () => { SVAR = {}; tegnListe(); oppdater(); };
+$('print').onclick = () => window.print();
+$('kontakt').href = `mailto:${CONTACT}?subject=${encodeURIComponent('Mangelsjekk: prøv på neste søknad')}&body=${encodeURIComponent('Hei,\n\nJeg vil prøve mangelsjekk på neste byggesøknad.\n\nFirma:\nOrg.nr:\nAntall søknader i året:\nKommune(r) dere søker i:\n')}`;
+
+tegnTyper(); tegnListe(); oppdater();
+</script>
+</body>
+</html>
